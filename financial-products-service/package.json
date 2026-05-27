@@ -1,6 +1,7 @@
 {
   "name": "financial-products-service",
   "version": "1.0.0",
+  "packageManager": "pnpm@8.10.0",
   "description": "Servicio de productos financieros y divisas",
   "main": "src/server.js",
   "scripts": {

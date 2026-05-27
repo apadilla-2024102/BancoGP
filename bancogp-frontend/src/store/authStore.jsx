@@ -13,6 +13,16 @@ const getSavedAuth = () => {
   }
 };
 
+const getDevAuth = () => ({
+  token: 'dev-token',
+  user: {
+    id: 'dev',
+    username: 'demo',
+    email: 'demo@local',
+    role: 'ADMIN'
+  }
+});
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -32,13 +42,26 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authRecord));
         })
         .catch(() => {
-          localStorage.removeItem(AUTH_STORAGE_KEY);
-          setToken(null);
-          setUser(null);
+          if (import.meta.env.DEV) {
+            const devAuth = getDevAuth();
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(devAuth));
+            setToken(devAuth.token);
+            setUser(devAuth.user);
+          } else {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            setToken(null);
+            setUser(null);
+          }
         })
         .finally(() => {
           setLoading(false);
         });
+    } else if (import.meta.env.DEV) {
+      const devAuth = getDevAuth();
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(devAuth));
+      setToken(devAuth.token);
+      setUser(devAuth.user);
+      setLoading(false);
     } else {
       setLoading(false);
     }

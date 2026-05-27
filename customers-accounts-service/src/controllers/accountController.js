@@ -1,16 +1,33 @@
+const Account = require('../models/account');
+const Customer = require('../models/customer');
+const mongoose = require('mongoose');
+
+function generateAccountNumber() {
+  // simple random 10-digit account number
+  return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+}
+
 const accountController = {
   createAccount: async (req, res, next) => {
     try {
       const { customerId, accountType, initialBalance } = req.body;
-      // TODO: Implement account creation
-      res.status(201).json({
-        message: 'Account created successfully',
-        accountId: 'ACC123456',
-        accountNumber: '0001234567',
+      const customer = await Customer.findById(customerId);
+      if (!customer) return res.status(404).json({ error: 'Customer not found' });
+
+      let accountNumber = generateAccountNumber();
+      // ensure uniqueness
+      while (await Account.findOne({ accountNumber })) {
+        accountNumber = generateAccountNumber();
+      }
+
+      const account = new Account({
+        accountNumber,
         customerId,
         accountType,
-        balance: initialBalance
+        balance: initialBalance || 0
       });
+      await account.save();
+      res.status(201).json({ message: 'Account created successfully', account });
     } catch (error) {
       next(error);
     }
@@ -19,12 +36,17 @@ const accountController = {
   getBalance: async (req, res, next) => {
     try {
       const { accountId } = req.params;
-      // TODO: Implement get balance
-      res.status(200).json({
-        accountId,
-        balance: 5000.00,
-        currency: 'USD'
-      });
+      let account = null;
+      // try by ObjectId first
+      if (mongoose.Types.ObjectId.isValid(accountId)) {
+        account = await Account.findById(accountId).lean();
+      }
+      // fallback to accountNumber
+      if (!account) {
+        account = await Account.findOne({ accountNumber: accountId }).lean();
+      }
+      if (!account) return res.status(404).json({ error: 'Account not found' });
+      res.status(200).json({ accountId: account._id, balance: account.balance, currency: account.currency });
     } catch (error) {
       next(error);
     }
@@ -33,16 +55,15 @@ const accountController = {
   getAccountDetails: async (req, res, next) => {
     try {
       const { accountId } = req.params;
-      // TODO: Implement get account details
-      res.status(200).json({
-        accountId,
-        accountNumber: '0001234567',
-        customerId: 'CUST123',
-        accountType: 'Savings',
-        balance: 5000.00,
-        currency: 'USD',
-        createdAt: new Date()
-      });
+      let account = null;
+      if (mongoose.Types.ObjectId.isValid(accountId)) {
+        account = await Account.findById(accountId).populate('customerId', 'firstName lastName email').lean();
+      }
+      if (!account) {
+        account = await Account.findOne({ accountNumber: accountId }).populate('customerId', 'firstName lastName email').lean();
+      }
+      if (!account) return res.status(404).json({ error: 'Account not found' });
+      res.status(200).json(account);
     } catch (error) {
       next(error);
     }
@@ -51,11 +72,32 @@ const accountController = {
   listCustomerAccounts: async (req, res, next) => {
     try {
       const { customerId } = req.params;
-      // TODO: Implement list customer accounts
-      res.status(200).json({
-        customerId,
-        accounts: []
-      });
+      const accounts = await Account.find({ customerId }).lean();
+      res.status(200).json({ customerId, accounts });
+    } catch (error) {
+      next(error);
+    }
+  }
+,
+
+  updateBalance: async (req, res, next) => {
+    try {
+      const { accountId } = req.params;
+      const { delta } = req.body; // positive or negative number
+      if (typeof delta !== 'number') return res.status(400).json({ error: 'delta must be a number' });
+
+      let account = null;
+      if (mongoose.Types.ObjectId.isValid(accountId)) {
+        account = await Account.findById(accountId);
+      }
+      if (!account) {
+        account = await Account.findOne({ accountNumber: accountId });
+      }
+
+      if (!account) return res.status(404).json({ error: 'Account not found' });
+      account.balance = (account.balance || 0) + delta;
+      await account.save();
+      res.status(200).json({ message: 'Balance updated', accountId: account._id, balance: account.balance });
     } catch (error) {
       next(error);
     }

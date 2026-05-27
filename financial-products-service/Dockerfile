@@ -2,12 +2,12 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN npm install
+RUN corepack enable && corepack prepare pnpm@8.10.0 --activate && pnpm install
 
 COPY . .
 
 EXPOSE 3003
 
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
