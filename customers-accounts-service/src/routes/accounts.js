@@ -19,5 +19,6 @@ router.post('/', async (req, res, next) => {
 router.get('/:accountId', accountController.getAccountDetails);
 router.get('/:accountId/balance', accountController.getBalance);
 router.get('/customer/:customerId', accountController.listCustomerAccounts);
+router.patch('/:accountId/balance', accountController.updateBalance);
 
 module.exports = router;

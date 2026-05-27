@@ -32,8 +32,9 @@ export const productsClient = createClient(import.meta.env.VITE_PRODUCTS_API_URL
 export const reportsClient = createClient(import.meta.env.VITE_REPORTS_API_URL || 'http://localhost:3004/api');
 
 export const handleResponse = (response) => {
+  if (!response) return {};
   if (response?.data?.data !== undefined) {
     return response.data.data;
   }
-  return response.data;
+  return response.data || {};
 };

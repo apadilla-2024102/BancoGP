@@ -9,8 +9,14 @@ import ProductsPage from './pages/ProductsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
 
 function ProtectedRoute({ children }) {
-  const { token } = useAuth();
-  return token ? children : <Navigate to="/login" replace />;
+  try {
+    const { token, loading } = useAuth();
+    if (loading) return <div style={{ padding: '20px', textAlign: 'center' }}>Cargando...</div>;
+    return token ? children : <Navigate to="/login" replace />;
+  } catch (error) {
+    // If auth context is not available, redirect to login
+    return <Navigate to="/login" replace />;
+  }
 }
 
 export default function AppRouter() {

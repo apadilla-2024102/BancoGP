@@ -3,7 +3,7 @@ const router = express.Router();
 const customerController = require('../controllers/customerController');
 const { registerCustomerSchema, updateCustomerSchema } = require('../validators/customerValidator');
 
-router.post('/register', async (req, res, next) => {
+const validateAndRegister = async (req, res, next) => {
   try {
     const { error, value } = registerCustomerSchema.validate(req.body);
     if (error) {
@@ -14,7 +14,10 @@ router.post('/register', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
+
+router.post('/', validateAndRegister);
+router.post('/register', validateAndRegister);
 
 router.get('/', customerController.listCustomers);
 router.get('/:customerId', customerController.getCustomer);

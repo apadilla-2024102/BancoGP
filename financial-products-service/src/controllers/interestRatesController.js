@@ -20,7 +20,11 @@ const interestRatesController = {
     try {
       // TODO: Get from database
       res.status(200).json({
-        interestRates: []
+        interestRates: [
+          { accountTypeId: 'AT1', accountType: 'Savings', rate: 1.25 },
+          { accountTypeId: 'AT2', accountType: 'Checking', rate: 0.35 },
+          { accountTypeId: 'AT3', accountType: 'Money Market', rate: 2.10 }
+        ]
       });
     } catch (error) {
       next(error);

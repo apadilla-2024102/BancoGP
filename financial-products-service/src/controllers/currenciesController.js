@@ -33,13 +33,24 @@ const currenciesController = {
 
   convertCurrency: async (req, res, next) => {
     try {
-      const { fromCurrency, toCurrency, amount } = req.query;
-      // TODO: Implement conversion logic
+      const fromCurrency = req.query.fromCurrency || req.query.from || 'USD';
+      const toCurrency = req.query.toCurrency || req.query.to || 'EUR';
+      const amount = Number(req.query.amount ?? 0);
+
+      const rates = {
+        USD: 1.0,
+        EUR: 0.92,
+        MXN: 17.05
+      };
+      const fromRate = rates[fromCurrency] ?? 1.0;
+      const toRate = rates[toCurrency] ?? 1.0;
+      const convertedAmount = amount > 0 ? Number(((amount / fromRate) * toRate).toFixed(2)) : 0;
+
       res.status(200).json({
         fromCurrency,
         toCurrency,
         amount,
-        convertedAmount: amount * 0.92
+        convertedAmount
       });
     } catch (error) {
       next(error);
