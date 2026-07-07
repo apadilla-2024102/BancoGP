@@ -4,7 +4,16 @@ namespace AuthService.Api.Extensions;
 
 public static class SecurityExtensions
 {
-    private static readonly string[] DefaultAllowedOrigins = ["http://localhost:3000", "http://localhost:3005", "https://localhost:3001"];
+    private static readonly string[] DefaultAllowedOrigins = new[] {
+        "http://localhost:3000",
+        "http://localhost:3005",
+        "https://localhost:3001",
+        // Dev Vite addresses used by the frontend and Expo
+        "http://localhost:5035",
+        "http://127.0.0.1:5035",
+        "http://192.168.1.34:5035",
+        "http://10.0.2.2:5035"
+    };
     private static readonly string[] DefaultAdminOrigins = ["https://admin.localhost"];
     private static readonly string[] AllowedHttpMethods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
     private static readonly string[] AdminHttpMethods = ["GET", "POST", "PUT", "DELETE"];
