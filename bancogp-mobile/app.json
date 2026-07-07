@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "BancoGP",
+    "slug": "bancogp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundle": "com.bancogp.app"
+    },
+    "android": {
+      "package": "com.bancogp.app"
+    },
+    "web": {
+      "bundle": true,
+      "output": "single"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permisos para acceder a tus fotos",
+          "cameraPermission": "Permisos para usar la cámara"
+        }
+      ]
+    ],
+    "scheme": "bancogp"
+  }
+}
