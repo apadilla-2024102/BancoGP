@@ -604,8 +604,6 @@ dashboard-content .page-shell__card {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 3rem;
-  align-items: center;
-}
   align-items: stretch;
   padding: 4rem;
   animation: fadeInUp 1s ease-out;
@@ -683,10 +681,6 @@ dashboard-content .page-shell__card {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-muted);
-}
-  text-transform: uppercase;
-  letter-spacing: 0.24em;
-  color: rgba(92, 219, 149, 0.95);
 }
 
 .login-page__hero-copy h1 {
@@ -1112,5 +1106,57 @@ dashboard-content .page-shell__card {
 
   .stats-container {
     grid-template-columns: 1fr;
+  }
+
+  .login-page {
+    padding: 1rem;
+  }
+
+  .login-page__container {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .login-page__hero,
+  .login-page__panel {
+    padding: 2rem;
+  }
+
+  .login-page__hero-copy h1 {
+    font-size: clamp(1.75rem, 8vw, 2.4rem);
+  }
+
+  .login-page__hero-copy p {
+    max-width: 100%;
+    font-size: 1rem;
+  }
+
+  .login-page__panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .login-page__panel-logo-group {
+    width: 100%;
+  }
+
+  .login-page__panel-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .login-page__panel h2 {
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
+  }
+
+  .login-form__field input {
+    padding: 0.95rem 1rem;
+    font-size: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
