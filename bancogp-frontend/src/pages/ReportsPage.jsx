@@ -36,7 +36,7 @@ export default function ReportsPage() {
   useEffect(() => {
     getStatistics()
       .then(setStatistics)
-      .catch(() => toast.error('No se pudieron cargar las estadísticas.'))
+      .catch(() => toast.error('No se pudieron cargar las estadísticas.', { id: 'stats-error' }))
       .finally(() => setLoadingStats(false));
   }, []);
 
