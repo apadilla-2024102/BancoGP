@@ -1,0 +1,43 @@
+/* Rejilla de dos columnas para páginas de lista + detalle */
+.split-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .split-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1101px) {
+  .sticky-card {
+    position: sticky;
+    top: calc(var(--topbar-height) + 16px);
+  }
+}
+
+.cell-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.cell-user__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.avatar--sm {
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+}
+
+.card .alert {
+  margin-bottom: 16px;
+}
