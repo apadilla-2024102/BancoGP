@@ -93,8 +93,9 @@
   gap: 4px;
   padding: 20px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #18181b, #312e81 70%, #4f46e5);
+  background: var(--gradient-hero);
   color: #fff;
+  box-shadow: 0 16px 32px -16px rgba(79, 70, 229, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .balance-hero__label {
