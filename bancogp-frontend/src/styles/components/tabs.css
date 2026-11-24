@@ -61,3 +61,13 @@
   line-height: 18px;
   font-variant-numeric: tabular-nums;
 }
+
+/* Pestaña activa con el color del módulo */
+.tabs__tab.is-active .tabs__count {
+  background: var(--tone, var(--accent));
+  color: #fff;
+}
+
+.tabs__tab.is-active .tabs__label {
+  color: var(--tone, var(--accent));
+}

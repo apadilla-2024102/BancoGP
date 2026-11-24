@@ -82,3 +82,17 @@
 .skeleton-row td {
   height: 44px;
 }
+
+/* Encabezado con un leve tinte del color del módulo */
+.table th {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tone, var(--accent)) 6%, var(--surface-subtle)), var(--surface-subtle));
+}
+
+.table tr.is-selected,
+.table tr.is-selected:hover {
+  background: color-mix(in srgb, var(--tone, var(--accent)) 9%, transparent);
+}
+
+.table tr.is-selected td:first-child {
+  box-shadow: inset 3px 0 0 var(--tone, var(--accent));
+}
