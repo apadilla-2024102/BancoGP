@@ -31,7 +31,7 @@ export const LoginForm = ({ onSubmit }) => {
   };
 
   return (
-    <form className="login-form-v2" onSubmit={handleSubmit} noValidate>
+    <form className="login-form" onSubmit={handleSubmit} noValidate>
       <Input
         label="Correo o usuario"
         name="email"
