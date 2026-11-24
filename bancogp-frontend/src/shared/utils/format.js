@@ -68,21 +68,3 @@ const plural = new Intl.PluralRules('es-GT');
 /** Pluraliza correctamente: pluralize(1, 'cuenta', 'cuentas'). */
 export const pluralize = (count, one, other) =>
   `${formatNumber(count)} ${plural.select(count) === 'one' ? one : other}`;
-
-const AVATAR_TONES = ['indigo', 'blue', 'emerald', 'violet', 'amber', 'rose', 'cyan'];
-
-/** Tono estable a partir de un texto: el mismo cliente siempre tiene el mismo color. */
-export const toneFromString = (value = '') => {
-  let hash = 0;
-  for (const char of String(value)) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  return AVATAR_TONES[hash % AVATAR_TONES.length];
-};
-
-/** Tono según el tipo de cuenta. */
-export const accountTypeTone = (type = '') => {
-  const t = String(type).toLowerCase();
-  if (t.includes('ahorro') || t.includes('saving')) return 'success';
-  if (t.includes('corriente') || t.includes('checking') || t.includes('monetaria')) return 'info';
-  if (t.includes('plazo') || t.includes('inversi')) return 'warning';
-  return 'accent';
-};

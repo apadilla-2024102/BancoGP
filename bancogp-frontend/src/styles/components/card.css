@@ -97,23 +97,3 @@
   border: 0;
   background: var(--border);
 }
-
-/* Ícono con color cuando el encabezado tiene tono */
-.card__header[data-tone] .card__icon {
-  border-color: transparent;
-  background: var(--tone-soft);
-  color: var(--tone);
-}
-
-/* Línea de color superior para tarjetas destacadas */
-.card--accent {
-  overflow: hidden;
-}
-
-.card--accent::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--gradient-brand);
-}

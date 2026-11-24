@@ -2,9 +2,9 @@ import { cn } from '../../utils/cn.js';
 import { NumberTicker } from './NumberTicker.jsx';
 import { Skeleton } from './Skeleton.jsx';
 
-/** Tarjeta de métrica con color: ícono en degradado y brillo del tono. */
-export const StatCard = ({ label, value, icon, format, hint, tone = 'indigo', loading = false, className }) => (
-  <div className={cn('stat-card', className)} data-tone={tone}>
+/** Tarjeta de métrica: etiqueta, valor animado e icono. */
+export const StatCard = ({ label, value, icon, format, hint, loading = false, className }) => (
+  <div className={cn('stat-card', className)}>
     <div className="stat-card__top">
       <span className="stat-card__label">{label}</span>
       {icon && <span className="stat-card__icon">{icon}</span>}

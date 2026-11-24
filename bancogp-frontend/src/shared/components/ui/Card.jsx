@@ -6,8 +6,8 @@ export const Card = ({ as: Tag = 'section', className, padded = true, children, 
   </Tag>
 );
 
-export const CardHeader = ({ title, description, icon, actions, tone, className }) => (
-  <header className={cn('card__header', className)} data-tone={tone}>
+export const CardHeader = ({ title, description, icon, actions, className }) => (
+  <header className={cn('card__header', className)}>
     <div className="card__heading">
       {icon && <span className="card__icon">{icon}</span>}
       <div>

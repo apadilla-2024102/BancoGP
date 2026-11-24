@@ -41,10 +41,3 @@
 .empty-state__action {
   margin-top: 12px;
 }
-
-/* Dentro de un módulo, el ícono toma su color */
-.layout .empty-state__icon {
-  border-color: color-mix(in srgb, var(--tone) 20%, transparent);
-  background: var(--tone-soft);
-  color: var(--tone);
-}

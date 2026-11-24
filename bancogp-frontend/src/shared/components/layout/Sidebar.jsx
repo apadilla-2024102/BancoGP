@@ -34,17 +34,14 @@ export const Sidebar = ({ className, onNavigate }) => {
 
       <nav className="sidebar__nav" aria-label="Navegación principal">
         <p className="sidebar__section">General</p>
-        {NAV_ITEMS.map(({ to, label, icon: Icon, tone }) => (
+        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
-            data-tone={tone}
             onClick={onNavigate}
             className={({ isActive }) => cn('sidebar__link', isActive && 'is-active')}
           >
-            <span className="sidebar__link-icon" aria-hidden="true">
-              <Icon />
-            </span>
+            <Icon className="sidebar__link-icon" aria-hidden="true" />
             <span>{label}</span>
           </NavLink>
         ))}

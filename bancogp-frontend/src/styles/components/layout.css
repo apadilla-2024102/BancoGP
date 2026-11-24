@@ -12,26 +12,10 @@
 }
 
 .layout__main {
-  position: relative;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
-}
-
-.layout__main::before {
-  /* Brillos de color suaves detrás del contenido, teñidos por el módulo */
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 520px;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 80% at 15% 0%, color-mix(in srgb, var(--tone) 14%, transparent), transparent 70%),
-    radial-gradient(40% 60% at 85% 10%, var(--glow-2), transparent 70%),
-    radial-gradient(50% 60% at 60% 30%, var(--glow-3), transparent 70%);
 }
 
 .layout__content {
@@ -98,30 +82,11 @@
 /* Encabezado de página */
 .page-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 28px;
-}
-
-.page-header__icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--tone), color-mix(in srgb, var(--tone) 60%, #db2777));
-  color: #fff;
-  font-size: 22px;
-  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--tone) 70%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-.page-header__text {
-  flex: 1;
-  min-width: 0;
 }
 
 .page-header__title {

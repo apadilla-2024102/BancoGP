@@ -26,21 +26,6 @@ La interfaz sigue la filosofía de diseño de Emil Kowalski: neutra, sobria y co
 | Movimiento reducido | `prefers-reduced-motion` conserva opacidad y elimina desplazamientos |
 | Números estables | `font-variant-numeric: tabular-nums` en montos y métricas |
 
-### Color por módulo
-
-Cada sección tiene su propio tono (atributo `data-tone`), que tiñe el ícono del encabezado, la navegación, las tablas, las pestañas y los brillos del fondo:
-
-| Módulo | Tono |
-| --- | --- |
-| Panel principal | Índigo |
-| Clientes | Azul |
-| Cuentas | Esmeralda |
-| Transacciones | Violeta |
-| Productos financieros | Ámbar |
-| Reportes | Rosa |
-
-Los degradados de marca (`--gradient-brand`, `--gradient-hero`) se usan en el banner del panel, el login, los saldos destacados y el botón primario.
-
 ### Estructura
 
 ```

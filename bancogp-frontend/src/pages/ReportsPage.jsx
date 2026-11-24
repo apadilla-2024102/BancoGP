@@ -75,11 +75,10 @@ export default function ReportsPage() {
   return (
     <DashboardLayout title="Reportes" subtitle="Estadísticas generales, reportes financieros y estados de cuenta.">
       <div className="stat-grid stagger">
-        <StatCard tone="blue" label="Clientes" value={statistics?.totalCustomers ?? 0} icon={<FiUsers />} loading={loadingStats} />
-        <StatCard tone="emerald" label="Cuentas" value={statistics?.totalAccounts ?? 0} icon={<FiCreditCard />} loading={loadingStats} />
-        <StatCard tone="violet" label="Transacciones" value={statistics?.totalTransactions ?? 0} icon={<FiRepeat />} loading={loadingStats} />
+        <StatCard label="Clientes" value={statistics?.totalCustomers ?? 0} icon={<FiUsers />} loading={loadingStats} />
+        <StatCard label="Cuentas" value={statistics?.totalAccounts ?? 0} icon={<FiCreditCard />} loading={loadingStats} />
+        <StatCard label="Transacciones" value={statistics?.totalTransactions ?? 0} icon={<FiRepeat />} loading={loadingStats} />
         <StatCard
-          tone="amber"
           label="Balance total"
           value={statistics?.totalBalance ?? 0}
           format={formatMoney}
@@ -90,7 +89,7 @@ export default function ReportsPage() {
 
       <div className="card-grid">
         <Card>
-          <CardHeader tone="rose" icon={<FiBarChart2 />} title="Reporte financiero" description="Ingresos, gastos y márgenes del período." />
+          <CardHeader icon={<FiBarChart2 />} title="Reporte financiero" description="Ingresos, gastos y márgenes del período." />
           <form className="form-stack" onSubmit={handleFinancialReport}>
             <div className="form-grid">
               <Input label="Desde" type="date" value={reportForm.startDate} onChange={updateReport('startDate')} />
@@ -127,7 +126,7 @@ export default function ReportsPage() {
         </Card>
 
         <Card>
-          <CardHeader tone="cyan" icon={<FiFileText />} title="Estado de cuenta" description="Movimientos y saldos de una cuenta específica." />
+          <CardHeader icon={<FiFileText />} title="Estado de cuenta" description="Movimientos y saldos de una cuenta específica." />
           <form className="form-stack" onSubmit={handleStatement}>
             <Input label="ID de cuenta" value={statementForm.accountId} onChange={updateStatement('accountId')} placeholder="Ej: 6a15401bd43966a75a44ba8" />
             <div className="form-grid">

@@ -49,9 +49,9 @@
   gap: 16px;
   margin-bottom: 16px;
   padding: 14px 16px;
-  border: 1px solid color-mix(in srgb, var(--c-violet) 20%, transparent);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: linear-gradient(120deg, var(--c-violet-soft), var(--c-indigo-soft));
+  background: var(--surface-subtle);
   font-size: 13px;
 }
 
@@ -72,7 +72,6 @@
 }
 
 .balance-strip__value {
-  color: var(--c-violet);
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.02em;
