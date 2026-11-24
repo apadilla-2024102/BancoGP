@@ -1,27 +1,28 @@
-import { Navbar } from './Navbar.jsx';
+import { useCallback, useState } from 'react';
+import { Sidebar } from './Sidebar.jsx';
+import { Topbar } from './Topbar.jsx';
+import { MobileNav } from './MobileNav.jsx';
 
-export const DashboardLayout = ({ title, subtitle, children }) => {
+/** Estructura principal: barra lateral fija, barra superior y contenido. */
+export const DashboardLayout = ({ title, subtitle, actions, children }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
   return (
-    <div className="dashboard-shell">
-      <div className="dashboard-background-shape" />
-      <div className="dashboard-background-shape dashboard-background-shape--two" />
-      <Navbar />
-      <div className="dashboard-main">
-        <div className="dashboard-topbar">
-          <div className="dashboard-topbar__title-group">
-            <span className="dashboard-topbar__eyebrow">Sistema de Gestión Bancaria</span>
-            <h2 className="dashboard-topbar__title">{title}</h2>
-          </div>
-          <div className="dashboard-topbar__status">Estado del sistema: Operativo</div>
-        </div>
-        <main className="dashboard-content">
-          <section className="page-shell__card">
-            <div className="page-shell__header">
-              <h1>{title}</h1>
-              {subtitle && <p>{subtitle}</p>}
+    <div className="layout">
+      <Sidebar className="layout__sidebar" />
+      <MobileNav open={menuOpen} onClose={closeMenu} />
+      <div className="layout__main">
+        <Topbar onOpenMenu={() => setMenuOpen(true)} />
+        <main className="layout__content">
+          <header className="page-header animate-in">
+            <div className="page-header__text">
+              <h1 className="page-header__title">{title}</h1>
+              {subtitle && <p className="page-header__subtitle">{subtitle}</p>}
             </div>
-            {children}
-          </section>
+            {actions && <div className="page-header__actions">{actions}</div>}
+          </header>
+          <div className="page-body">{children}</div>
         </main>
       </div>
     </div>
