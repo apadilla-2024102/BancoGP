@@ -168,3 +168,15 @@
     font-size: 22px;
   }
 }
+
+.fullscreen-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 100dvh;
+  color: var(--text-muted);
+  font-size: 13px;
+  animation: fade-in 300ms ease both;
+}

@@ -7,16 +7,19 @@ import AccountsPage from './pages/AccountsPage.jsx';
 import TransactionsPage from './pages/TransactionsPage.jsx';
 import ProductsPage from './pages/ProductsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
+import { Spinner } from './shared/components/ui/index.js';
+
+const FullScreenLoader = () => (
+  <div className="fullscreen-loader">
+    <Spinner size={20} />
+    <span>Cargando tu sesión…</span>
+  </div>
+);
 
 function ProtectedRoute({ children }) {
-  try {
-    const { token, loading } = useAuth();
-    if (loading) return <div style={{ padding: '20px', textAlign: 'center' }}>Cargando...</div>;
-    return token ? children : <Navigate to="/login" replace />;
-  } catch (error) {
-    // If auth context is not available, redirect to login
-    return <Navigate to="/login" replace />;
-  }
+  const { token, loading } = useAuth();
+  if (loading) return <FullScreenLoader />;
+  return token ? children : <Navigate to="/login" replace />;
 }
 
 export default function AppRouter() {
@@ -71,6 +74,7 @@ export default function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
