@@ -1,0 +1,200 @@
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100dvh;
+  background: var(--background);
+}
+
+.auth__form-side {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 32px;
+}
+
+.auth__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth__form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 360px;
+  margin: auto;
+  padding: 48px 0;
+}
+
+.auth__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  object-fit: contain;
+  box-shadow: var(--shadow-sm);
+}
+
+.auth__intro h1 {
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.auth__intro p {
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.login-form-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth__legal {
+  font-size: 12px;
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.auth__footer {
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+
+/* Panel derecho decorativo */
+.auth__showcase {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 12px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+}
+
+.auth__showcase-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding: 48px;
+}
+
+.bank-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 340px;
+  aspect-ratio: 1.586;
+  padding: 24px;
+  border-radius: 18px;
+  color: #fff;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(255, 255, 255, 0.18), transparent 50%),
+    linear-gradient(135deg, #18181b 0%, #312e81 55%, #4f46e5 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 30px 60px -20px rgba(49, 46, 129, 0.55),
+    0 12px 24px -12px rgba(0, 0, 0, 0.4);
+  transform: rotate(-4deg);
+  animation: card-float 700ms var(--ease-out) both;
+}
+
+@keyframes card-float {
+  from {
+    opacity: 0;
+    transform: rotate(-4deg) translateY(16px) scale(0.98);
+  }
+}
+
+.bank-card__top,
+.bank-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bank-card__chip {
+  width: 40px;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fde68a, #d97706);
+  opacity: 0.9;
+}
+
+.bank-card__brand {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.bank-card__number {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+
+.bank-card__bottom {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.auth__features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 340px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth__features li {
+  display: flex;
+  gap: 12px;
+}
+
+.auth__feature-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth__feature-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.auth__feature-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 960px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+
+  .auth__showcase {
+    display: none;
+  }
+
+  .auth__form-side {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bank-card {
+    animation-name: fade-in;
+  }
+}
