@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { FiCreditCard, FiPlus, FiUsers } from 'react-icons/fi';
+import { FiCreditCard, FiPlus, FiSearch, FiUsers } from 'react-icons/fi';
 import { DashboardLayout } from '../shared/components/layout/DashboardLayout.jsx';
 import { getCustomers, getCustomerAccounts, createCustomer } from '../shared/api/customersApi.js';
 import { Badge, Button, Card, CardHeader, DataTable, EmptyState, Input, Modal } from '../shared/components/ui/index.js';
@@ -30,6 +30,16 @@ export default function CustomersPage() {
   const [creating, setCreating] = useState(false);
   const [newCustomer, setNewCustomer] = useState(EMPTY_FORM);
   const [customerAccounts, setCustomerAccounts] = useState({});
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+
+  const filteredCustomers = useMemo(() => {
+    const term = deferredQuery.trim().toLowerCase();
+    if (!term) return customers;
+    return customers.filter((c) =>
+      [getCustomerName(c), c.email, String(getId(c))].some((value) => value?.toLowerCase().includes(term))
+    );
+  }, [customers, deferredQuery]);
 
   useEffect(() => {
     getCustomers()
@@ -140,16 +150,29 @@ export default function CustomersPage() {
             description={loading ? 'Cargando…' : `${customers.length} clientes registrados`}
           />
           {error && !showModal && <p className="alert alert--danger">{error}</p>}
+          <Input
+            className="table-search"
+            type="search"
+            placeholder="Buscar por nombre, correo o ID"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            icon={<FiSearch />}
+            aria-label="Buscar clientes"
+          />
           <DataTable
             caption="Lista de clientes"
             columns={customerColumns}
-            rows={customers}
+            rows={filteredCustomers}
             loading={loading}
             getRowKey={(c) => getId(c)}
             onRowClick={(c) => handleViewAccounts(c)}
             selectedKey={selectedCustomer ? getId(selectedCustomer) : undefined}
-            emptyTitle="Aún no hay clientes"
-            emptyDescription="Agrega el primero para empezar a gestionar sus cuentas."
+            emptyTitle={query ? 'Sin resultados' : 'Aún no hay clientes'}
+            emptyDescription={
+              query
+                ? `Ningún cliente coincide con “${query}”.`
+                : 'Agrega el primero para empezar a gestionar sus cuentas.'
+            }
           />
         </Card>
 
