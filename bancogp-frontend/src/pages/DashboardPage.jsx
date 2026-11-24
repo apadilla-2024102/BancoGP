@@ -119,8 +119,8 @@ export default function DashboardPage() {
           Accesos rápidos
         </h2>
         <div className="quick-actions__grid stagger">
-          {QUICK_LINKS.map(({ to, label, icon: Icon }) => (
-            <Link key={to} to={to} className="quick-action">
+          {QUICK_LINKS.map(({ to, label, icon: Icon, tone }) => (
+            <Link key={to} to={to} className="quick-action" data-tone={tone}>
               <span className="quick-action__icon">
                 <Icon />
               </span>
