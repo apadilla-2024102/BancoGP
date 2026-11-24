@@ -1,0 +1,68 @@
+/*
+ * Animaciones compartidas.
+ * Regla: solo transform y opacity, curvas ease-out fuertes, < 300ms en UI.
+ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes enter-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Entrada sutil para bloques de contenido */
+.animate-in {
+  animation: enter-up 400ms var(--ease-out) both;
+}
+
+/* Escalonado no uniforme: los primeros elementos llegan antes */
+.stagger > * {
+  animation: enter-up 400ms var(--ease-out) both;
+}
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 70ms; }
+.stagger > *:nth-child(4) { animation-delay: 95ms; }
+.stagger > *:nth-child(5) { animation-delay: 115ms; }
+.stagger > *:nth-child(n + 6) { animation-delay: 130ms; }
+
+/* Movimiento reducido: menos movimiento, no cero. Conservamos la opacidad. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .stagger > * {
+    animation-name: fade-in;
+    animation-delay: 0ms !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}

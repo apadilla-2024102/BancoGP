@@ -1,0 +1,133 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  /* Solo propiedades concretas; nunca `transition: all` */
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
+}
+
+/* El botón responde al presionarlo */
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.button__content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity var(--duration-base) ease, filter var(--duration-base) ease;
+}
+
+.button__icon {
+  display: inline-flex;
+  font-size: 16px;
+}
+
+/* Carga: el contenido se difumina y el spinner entra encima */
+.button.is-loading {
+  opacity: 1;
+  cursor: progress;
+}
+
+.button.is-loading .button__content {
+  opacity: 0;
+  filter: blur(2px);
+}
+
+.button__spinner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: fade-in var(--duration-base) ease both;
+}
+
+/* Variantes */
+.button--primary {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+.button--accent {
+  background: var(--accent);
+  color: #fff;
+}
+
+.button--secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.button--danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button--primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+  .button--accent:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+  .button--secondary:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
+  .button--ghost:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+  .button--danger:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+}
+
+/* Tamaños */
+.button--sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.button--lg {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 15px;
+}
+
+.button--icon {
+  width: 36px;
+  padding: 0;
+}
+
+.button--block {
+  width: 100%;
+}

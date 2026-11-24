@@ -1,0 +1,10 @@
+/* Ajustes de Sonner para que siga la tipografía y radios de la app */
+[data-sonner-toaster] {
+  --border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+}
+
+[data-sonner-toast].app-toast {
+  font-size: 13px;
+  box-shadow: var(--shadow-lg);
+}

@@ -1,10 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { FiCreditCard, FiSearch, FiUser } from 'react-icons/fi';
 import { DashboardLayout } from '../shared/components/layout/DashboardLayout.jsx';
 import { getCustomerAccounts, getCustomer } from '../shared/api/customersApi.js';
 import { getAccountDetails, getAccountBalance } from '../shared/api/accountsApi.js';
+import { Badge, Button, Card, CardHeader, DataTable, EmptyState, Input } from '../shared/components/ui/index.js';
+import { formatCurrency, pluralize } from '../shared/utils/format.js';
+import { getCustomerName } from '../shared/utils/cn.js';
 
-const formatCurrency = (value) =>
-  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD' }).format(value);
+const getAccountKey = (account) => account.accountId ?? account.id ?? account.accountNumber;
+
+const DetailRow = ({ label, children }) => (
+  <div className="detail-list__row">
+    <dt>{label}</dt>
+    <dd>{children}</dd>
+  </div>
+);
 
 export default function AccountsPage() {
   const [customerId, setCustomerId] = useState('');
@@ -13,135 +24,145 @@ export default function AccountsPage() {
   const [customer, setCustomer] = useState(null);
   const [accountDetails, setAccountDetails] = useState(null);
   const [balance, setBalance] = useState(null);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  const [searching, setSearching] = useState(false);
+  const [loadingAccount, setLoadingAccount] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  useEffect(() => {
-    if (!message) return;
-    const timer = setTimeout(() => setMessage(''), 6000);
-    return () => clearTimeout(timer);
-  }, [message]);
-
-  const handleSearchAccounts = async () => {
-    setMessage('');
-    setMessageType('');
+  const handleSearchAccounts = async (event) => {
+    event?.preventDefault();
+    if (!customerId.trim()) return;
+    setSearching(true);
     setAccountDetails(null);
     setBalance(null);
     try {
-      const customerResponse = await getCustomer(customerId);
+      const customerResponse = await getCustomer(customerId.trim());
       setCustomer(customerResponse);
-      const accountsResponse = await getCustomerAccounts(customerId);
+      const accountsResponse = await getCustomerAccounts(customerId.trim());
       setAccounts(accountsResponse.accounts ?? []);
-      if ((accountsResponse.accounts ?? []).length === 0) {
-        setMessage('No se encontraron cuentas para ese cliente.');
-        setMessageType('info');
-      }
     } catch {
-      setMessage('No se encontraron cuentas para ese cliente.');
-      setMessageType('error');
+      toast.error('Cliente no encontrado', { description: 'Verifica el ID e intenta de nuevo.' });
       setAccounts([]);
       setCustomer(null);
+    } finally {
+      setSearching(false);
+      setSearched(true);
     }
   };
 
   const handleLoadAccount = async (requestedAccountId = accountId) => {
-    setMessage('');
-    setMessageType('');
     if (!requestedAccountId) {
-      setMessage('Ingresa el ID de la cuenta para cargarla.');
-      setMessageType('error');
+      toast.error('Ingresa el ID de la cuenta para cargarla.');
       return;
     }
-
     setAccountId(requestedAccountId);
+    setLoadingAccount(true);
     try {
-      const details = await getAccountDetails(requestedAccountId);
-      const balanceResponse = await getAccountBalance(requestedAccountId);
+      const [details, balanceResponse] = await Promise.all([
+        getAccountDetails(requestedAccountId),
+        getAccountBalance(requestedAccountId),
+      ]);
       setAccountDetails(details);
       setBalance(balanceResponse);
-      setMessage('Datos de cuenta cargados correctamente.');
-      setMessageType('success');
     } catch {
-      setMessage('No se encontraron datos para esa cuenta.');
-      setMessageType('error');
+      toast.error('Cuenta no encontrada', { description: 'No se encontraron datos para esa cuenta.' });
       setAccountDetails(null);
       setBalance(null);
+    } finally {
+      setLoadingAccount(false);
     }
   };
 
+  const columns = [
+    { key: 'id', header: 'Cuenta', mono: true, render: (a) => getAccountKey(a) },
+    { key: 'type', header: 'Tipo', render: (a) => <Badge>{a.accountType ?? a.type ?? '—'}</Badge> },
+    { key: 'balance', header: 'Saldo', align: 'right', render: (a) => formatCurrency(a.balance ?? 0, a.currency) },
+  ];
+
+  const detailBalance = accountDetails?.balance ?? balance?.balance ?? 0;
+  const detailCurrency = accountDetails?.currency ?? balance?.currency ?? 'USD';
+
   return (
-    <DashboardLayout title="Cuentas" subtitle="Visualiza y administra las cuentas bancarias.">
-      <div className="section-grid">
-        <section className="panel-card">
-          <h2>Buscar cuentas por cliente</h2>
-          <div className="form-row">
-            <input type="text" value={customerId} onChange={(e) => setCustomerId(e.target.value)} placeholder="ID del cliente" />
-            <button className="btn btn--primary btn--small" onClick={handleSearchAccounts}>
+    <DashboardLayout title="Cuentas" subtitle="Busca las cuentas de un cliente y consulta el detalle y saldo de cada una.">
+      <div className="split-grid">
+        <Card>
+          <CardHeader icon={<FiUser />} title="Cuentas por cliente" description="Ingresa el ID del cliente para listar sus cuentas." />
+          <form className="inline-form" onSubmit={handleSearchAccounts}>
+            <Input
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+              placeholder="ID del cliente"
+              icon={<FiSearch />}
+              aria-label="ID del cliente"
+            />
+            <Button type="submit" variant="primary" loading={searching} disabled={!customerId.trim()}>
               Buscar
-            </button>
-          </div>
-          {message && <p className={messageType === 'error' ? 'error-text' : messageType === 'success' ? 'success-text' : 'info-text'}>{message}</p>}
+            </Button>
+          </form>
+
           {customer && (
-            <div className="info-card">
-              <p><strong>Cliente:</strong> {`${customer.firstName ?? customer.name ?? ''} ${customer.lastName ?? ''}`.trim()}</p>
-              <p><strong>Correo:</strong> {customer.email ?? '-'}</p>
-              <p><strong>Cantidad de cuentas:</strong> {accounts.length}</p>
+            <div className="customer-summary animate-in">
+              <span className="avatar">{getCustomerName(customer).charAt(0).toUpperCase()}</span>
+              <div className="customer-summary__info">
+                <p className="customer-summary__name">{getCustomerName(customer)}</p>
+                <p className="customer-summary__meta">{customer.email ?? 'Sin correo'}</p>
+              </div>
+              <Badge tone="accent">{pluralize(accounts.length, 'cuenta', 'cuentas')}</Badge>
             </div>
           )}
-          {accounts.length > 0 && (
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Tipo</th>
-                    <th>Saldo</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {accounts.map((account) => {
-                    const accountKey = account.accountId ?? account.id ?? account.accountNumber;
-                    return (
-                      <tr key={accountKey}>
-                        <td>{accountKey}</td>
-                        <td>{account.accountType ?? account.type ?? '-'}</td>
-                        <td>{formatCurrency(account.balance ?? 0)}</td>
-                        <td>
-                          <button className="btn btn--secondary btn--small" onClick={() => handleLoadAccount(accountKey)}>
-                            Ver detalles
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
 
-        <section className="panel-card">
-          <h2>Detalle de cuenta</h2>
-          <div className="form-row">
-            <input type="text" value={accountId} onChange={(e) => setAccountId(e.target.value)} placeholder="ID de la cuenta" />
-            <button className="btn btn--primary btn--small" onClick={() => handleLoadAccount(accountId)}>
-              Cargar datos
-            </button>
-          </div>
-
-          {accountDetails && (
-            <div className="info-card">
-              <p><strong>Cuenta:</strong> {accountDetails.accountNumber ?? accountDetails.accountId ?? accountDetails.id}</p>
-              <p><strong>Tipo:</strong> {accountDetails.accountType ?? accountDetails.type ?? '-'}</p>
-              <p><strong>Saldo:</strong> {formatCurrency(accountDetails.balance ?? balance?.balance ?? 0)}</p>
-              <p><strong>Moneda:</strong> {accountDetails.currency ?? balance?.currency ?? 'USD'}</p>
-              {accountDetails.customerId && (
-                <p><strong>Cliente:</strong> {`${accountDetails.customerId.firstName ?? ''} ${accountDetails.customerId.lastName ?? ''}`.trim()}</p>
-              )}
-            </div>
+          {searched || searching ? (
+            <DataTable
+              caption="Cuentas del cliente"
+              columns={columns}
+              rows={accounts}
+              loading={searching}
+              getRowKey={(a, i) => getAccountKey(a) ?? i}
+              onRowClick={(a) => handleLoadAccount(getAccountKey(a))}
+              selectedKey={accountDetails ? accountId : undefined}
+              emptyTitle="Sin cuentas"
+              emptyDescription="No se encontraron cuentas para ese cliente."
+            />
+          ) : (
+            <EmptyState icon={<FiSearch />} title="Busca un cliente" description="Sus cuentas aparecerán aquí." />
           )}
-        </section>
+        </Card>
+
+        <Card className="sticky-card">
+          <CardHeader icon={<FiCreditCard />} title="Detalle de cuenta" description="Selecciona una cuenta o ingresa su ID." />
+          <form
+            className="inline-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleLoadAccount(accountId);
+            }}
+          >
+            <Input value={accountId} onChange={(e) => setAccountId(e.target.value)} placeholder="ID de la cuenta" aria-label="ID de la cuenta" />
+            <Button type="submit" loading={loadingAccount} disabled={!accountId}>
+              Cargar
+            </Button>
+          </form>
+
+          {accountDetails ? (
+            <div className="account-detail animate-in" key={accountId}>
+              <div className="balance-hero">
+                <span className="balance-hero__label">Saldo disponible</span>
+                <span className="balance-hero__value tabular">{formatCurrency(detailBalance, detailCurrency)}</span>
+              </div>
+              <dl className="detail-list">
+                <DetailRow label="Número">
+                  <span className="mono">{accountDetails.accountNumber ?? accountDetails.accountId ?? accountDetails.id}</span>
+                </DetailRow>
+                <DetailRow label="Tipo">{accountDetails.accountType ?? accountDetails.type ?? '—'}</DetailRow>
+                <DetailRow label="Moneda">{detailCurrency}</DetailRow>
+                {accountDetails.customerId && typeof accountDetails.customerId === 'object' && (
+                  <DetailRow label="Titular">{getCustomerName(accountDetails.customerId)}</DetailRow>
+                )}
+              </dl>
+            </div>
+          ) : (
+            <EmptyState icon={<FiCreditCard />} title="Sin cuenta cargada" description="El saldo y los datos de la cuenta se mostrarán aquí." />
+          )}
+        </Card>
       </div>
     </DashboardLayout>
   );

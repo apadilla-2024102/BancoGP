@@ -1,76 +1,56 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './store/authStore.jsx';
 import LoginPage from './pages/LoginPage.jsx';
-import DashboardPage from './pages/DashboardPage.jsx';
-import CustomersPage from './pages/CustomersPage.jsx';
-import AccountsPage from './pages/AccountsPage.jsx';
-import TransactionsPage from './pages/TransactionsPage.jsx';
-import ProductsPage from './pages/ProductsPage.jsx';
-import ReportsPage from './pages/ReportsPage.jsx';
+import { Spinner } from './shared/components/ui/index.js';
+
+// Cada módulo se descarga solo cuando se visita
+const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
+const CustomersPage = lazy(() => import('./pages/CustomersPage.jsx'));
+const AccountsPage = lazy(() => import('./pages/AccountsPage.jsx'));
+const TransactionsPage = lazy(() => import('./pages/TransactionsPage.jsx'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage.jsx'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'));
+
+const FullScreenLoader = ({ label = 'Cargando tu sesión…' }) => (
+  <div className="fullscreen-loader">
+    <Spinner size={20} />
+    <span>{label}</span>
+  </div>
+);
 
 function ProtectedRoute({ children }) {
-  try {
-    const { token, loading } = useAuth();
-    if (loading) return <div style={{ padding: '20px', textAlign: 'center' }}>Cargando...</div>;
-    return token ? children : <Navigate to="/login" replace />;
-  } catch (error) {
-    // If auth context is not available, redirect to login
-    return <Navigate to="/login" replace />;
-  }
+  const { token, loading } = useAuth();
+  if (loading) return <FullScreenLoader />;
+  if (!token) return <Navigate to="/login" replace />;
+  return <Suspense fallback={<FullScreenLoader label="Cargando…" />}>{children}</Suspense>;
 }
+
+const PROTECTED_ROUTES = [
+  { path: '/dashboard', Component: DashboardPage },
+  { path: '/customers', Component: CustomersPage },
+  { path: '/accounts', Component: AccountsPage },
+  { path: '/transactions', Component: TransactionsPage },
+  { path: '/products', Component: ProductsPage },
+  { path: '/reports', Component: ReportsPage },
+];
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customers"
-        element={
-          <ProtectedRoute>
-            <CustomersPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/accounts"
-        element={
-          <ProtectedRoute>
-            <AccountsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/transactions"
-        element={
-          <ProtectedRoute>
-            <TransactionsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <ProductsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/reports"
-        element={
-          <ProtectedRoute>
-            <ReportsPage />
-          </ProtectedRoute>
-        }
-      />
+      {PROTECTED_ROUTES.map(({ path, Component }) => (
+        <Route
+          key={path}
+          path={path}
+          element={
+            <ProtectedRoute>
+              <Component />
+            </ProtectedRoute>
+          }
+        />
+      ))}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
