@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FiEye, FiEyeOff, FiLock, FiUser, FiAlertCircle } from 'react-icons/fi';
 import { Button, Input } from '../../../shared/components/ui/index.js';
+import { getErrorMessage } from '../../../shared/utils/cn.js';
 
 export const LoginForm = ({ onSubmit }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -24,7 +25,7 @@ export const LoginForm = ({ onSubmit }) => {
       setError('');
       await onSubmit(form);
     } catch (err) {
-      setError(err?.response?.data?.message || err?.message || 'No pudimos iniciar sesión. Revisa tus datos.');
+      setError(getErrorMessage(err, 'No pudimos iniciar sesión. Revisa tus datos.'));
     } finally {
       setSubmitting(false);
     }

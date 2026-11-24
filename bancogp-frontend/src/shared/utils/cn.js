@@ -26,6 +26,10 @@ export const getCustomerName = (customer) => {
 
 /** Mensaje de error legible desde una respuesta de axios. */
 export const getErrorMessage = (error, fallback = 'Ocurrió un error inesperado.') => {
+  // Sin respuesta: el servidor no está disponible o no hay red
+  if (error?.isAxiosError && !error.response) {
+    return 'No se pudo conectar con el servidor. Verifica tu conexión e intenta de nuevo.';
+  }
   const data = error?.response?.data;
   return data?.error || data?.message || error?.message || fallback;
 };
