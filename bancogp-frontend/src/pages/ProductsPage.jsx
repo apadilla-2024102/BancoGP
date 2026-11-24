@@ -1,125 +1,109 @@
 import { useEffect, useState } from 'react';
+import { FiDollarSign, FiLayers, FiPercent } from 'react-icons/fi';
 import { DashboardLayout } from '../shared/components/layout/DashboardLayout.jsx';
-import { getAccountTypes, getCurrencies, getInterestRates, convertCurrency } from '../shared/api/productsApi.js';
+import { getAccountTypes, getCurrencies, getInterestRates } from '../shared/api/productsApi.js';
+import { Badge, Card, CardHeader, DataTable, Tabs } from '../shared/components/ui/index.js';
+import { CurrencyConverter } from '../features/products/CurrencyConverter.jsx';
+
+const ACCOUNT_TYPE_COLUMNS = [
+  { key: 'name', header: 'Nombre', render: (i) => <span className="cell-strong">{i.name ?? i.typeName ?? '—'}</span> },
+  { key: 'id', header: 'ID', mono: true, render: (i) => i.accountTypeId ?? i.id ?? '—' },
+];
+
+const CURRENCY_COLUMNS = [
+  { key: 'code', header: 'Código', render: (c) => <Badge>{c.code ?? c.currencyCode ?? '—'}</Badge> },
+  { key: 'name', header: 'Nombre', render: (c) => c.name ?? c.description ?? '—' },
+];
+
+const RATE_COLUMNS = [
+  { key: 'account', header: 'Tipo de cuenta', render: (r) => r.accountType ?? r.accountTypeId ?? '—' },
+  {
+    key: 'rate',
+    header: 'Tasa anual',
+    align: 'right',
+    render: (r) => (r.rate != null ? <Badge tone="success">{`${r.rate}%`}</Badge> : '—'),
+  },
+];
 
 export default function ProductsPage() {
   const [accountTypes, setAccountTypes] = useState([]);
   const [currencies, setCurrencies] = useState([]);
   const [interestRates, setInterestRates] = useState([]);
-  const [conversion, setConversion] = useState(null);
-  const [convertForm, setConvertForm] = useState({ from: 'USD', to: 'EUR', amount: 1 });
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('currencies');
 
   useEffect(() => {
-    getAccountTypes().then((response) => setAccountTypes(response.accountTypes ?? [])).catch(() => {});
-    getCurrencies().then((response) => setCurrencies(response.currencies ?? [])).catch(() => {});
-    getInterestRates().then((response) => setInterestRates(response.interestRates ?? [])).catch(() => {});
+    Promise.allSettled([getAccountTypes(), getCurrencies(), getInterestRates()]).then(([types, curr, rates]) => {
+      if (types.status === 'fulfilled') setAccountTypes(types.value.accountTypes ?? []);
+      if (curr.status === 'fulfilled') setCurrencies(curr.value.currencies ?? []);
+      if (rates.status === 'fulfilled') setInterestRates(rates.value.interestRates ?? []);
+      setLoading(false);
+    });
   }, []);
 
-  const handleConvert = async () => {
-    setMessage('');
-    try {
-      const result = await convertCurrency(convertForm);
-      setConversion(result);
-    } catch {
-      setMessage('No se pudo convertir la moneda.');
-    }
-  };
-
   return (
-    <DashboardLayout title="Productos Financieros" subtitle="Administra cuentas, tasas e instrumentos bancarios.">
-      <div className="section-grid">
-        <section className="panel-card">
-          <h2>Tipos de cuenta</h2>
-          {accountTypes.length === 0 ? (
-            <p>No hay tipos de cuenta disponibles.</p>
-          ) : (
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {accountTypes.map((item) => (
-                    <tr key={item.accountTypeId ?? item.id ?? item.typeId}>
-                      <td>{item.accountTypeId ?? item.id ?? '-'}</td>
-                      <td>{item.name ?? item.typeName ?? '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+    <DashboardLayout title="Productos financieros" subtitle="Tipos de cuenta, monedas disponibles y tasas de interés vigentes.">
+      <div className="split-grid">
+        <div className="stack">
+          <Card>
+            <CardHeader icon={<FiLayers />} title="Tipos de cuenta" description="Productos que se pueden abrir para un cliente." />
+            <DataTable
+              caption="Tipos de cuenta"
+              columns={ACCOUNT_TYPE_COLUMNS}
+              rows={accountTypes}
+              loading={loading}
+              getRowKey={(i, index) => i.accountTypeId ?? i.id ?? i.typeId ?? index}
+              emptyTitle="Sin tipos de cuenta"
+              emptyDescription="No hay tipos de cuenta disponibles."
+            />
+          </Card>
 
-        <section className="panel-card">
-          <h2>Monedas y tasas</h2>
-          {currencies.length === 0 && interestRates.length === 0 ? (
-            <p>No hay datos de productos disponibles.</p>
-          ) : (
-            <>
-              <div className="table-wrapper">
-                <h3>Monedas</h3>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Moneda</th>
-                      <th>Nombre</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currencies.map((currency) => (
-                      <tr key={currency.code ?? currency.currencyCode ?? currency.id}>
-                        <td>{currency.code ?? currency.currencyCode ?? '-'}</td>
-                        <td>{currency.name ?? currency.description ?? '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="table-wrapper">
-                <h3>Tasas de interés</h3>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Cuenta</th>
-                      <th>Tasa</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {interestRates.map((rate) => (
-                      <tr key={rate.id ?? rate.accountTypeId ?? JSON.stringify(rate)}>
-                        <td>{rate.accountType ?? rate.accountTypeId ?? '-'}</td>
-                        <td>{rate.rate ? `${rate.rate}%` : '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-          <div className="convert-card">
-            <h3>Convertir moneda</h3>
-            <div className="form-row">
-              <input type="text" value={convertForm.from} onChange={(e) => setConvertForm((prev) => ({ ...prev, from: e.target.value }))} placeholder="Desde" />
-              <input type="text" value={convertForm.to} onChange={(e) => setConvertForm((prev) => ({ ...prev, to: e.target.value }))} placeholder="Hacia" />
-            </div>
-            <div className="form-row">
-              <input type="number" value={convertForm.amount} onChange={(e) => setConvertForm((prev) => ({ ...prev, amount: e.target.value }))} placeholder="Cantidad" />
-              <button className="btn btn--primary btn--small" onClick={handleConvert}>Convertir</button>
-            </div>
-            {message && <p className="error-text">{message}</p>}
-            {conversion && (
-              <div className="info-card">
-                <p><strong>Resultado:</strong> {conversion.convertedAmount ?? conversion.amount ?? 0}</p>
-                <p><strong>Moneda:</strong> {conversion.to ?? convertForm.to}</p>
-              </div>
+          <Card>
+            <CardHeader
+              icon={<FiPercent />}
+              title="Monedas y tasas"
+              actions={
+                <Tabs
+                  ariaLabel="Catálogo"
+                  value={tab}
+                  onChange={setTab}
+                  items={[
+                    { value: 'currencies', label: 'Monedas', count: currencies.length },
+                    { value: 'rates', label: 'Tasas', count: interestRates.length },
+                  ]}
+                />
+              }
+            />
+            {tab === 'currencies' ? (
+              <DataTable
+                key="currencies"
+                className="animate-in"
+                caption="Monedas"
+                columns={CURRENCY_COLUMNS}
+                rows={currencies}
+                loading={loading}
+                getRowKey={(c, i) => c.code ?? c.currencyCode ?? c.id ?? i}
+                emptyTitle="Sin monedas"
+              />
+            ) : (
+              <DataTable
+                key="rates"
+                className="animate-in"
+                caption="Tasas de interés"
+                columns={RATE_COLUMNS}
+                rows={interestRates}
+                loading={loading}
+                getRowKey={(r, i) => r.id ?? r.accountTypeId ?? i}
+                emptyTitle="Sin tasas"
+              />
             )}
-          </div>
-        </section>
+          </Card>
+        </div>
+
+        <Card className="sticky-card">
+          <CardHeader icon={<FiDollarSign />} title="Convertir moneda" description="Calcula el equivalente entre divisas." />
+          <CurrencyConverter currencies={currencies} />
+        </Card>
       </div>
     </DashboardLayout>
   );
