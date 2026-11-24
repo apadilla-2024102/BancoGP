@@ -26,6 +26,7 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true);
   const [loadingAccounts, setLoadingAccounts] = useState(false);
   const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [creating, setCreating] = useState(false);
   const [newCustomer, setNewCustomer] = useState(EMPTY_FORM);
@@ -72,7 +73,7 @@ export default function CustomersPage() {
 
   const closeModal = useCallback(() => {
     setShowModal(false);
-    setError('');
+    setFormError('');
   }, []);
 
   const handleAddCustomer = async (event) => {
@@ -99,10 +100,10 @@ export default function CustomersPage() {
       setAccounts(list);
       setNewCustomer(EMPTY_FORM);
       setShowModal(false);
-      setError('');
+      setFormError('');
       toast.success('Cliente creado', { description: `${getCustomerName(customer)} fue registrado correctamente.` });
     } catch (err) {
-      setError(getErrorMessage(err, 'Intenta de nuevo.'));
+      setFormError(getErrorMessage(err, 'Intenta de nuevo.'));
     } finally {
       setCreating(false);
     }
@@ -149,7 +150,7 @@ export default function CustomersPage() {
             title="Directorio"
             description={loading ? 'Cargando…' : `${customers.length} clientes registrados`}
           />
-          {error && !showModal && <p className="alert alert--danger">{error}</p>}
+          {error && <p className="alert alert--danger">{error}</p>}
           <Input
             className="table-search"
             type="search"
@@ -231,7 +232,7 @@ export default function CustomersPage() {
             placeholder="juan@correo.com"
             required
           />
-          {error && <p className="alert alert--danger">{error}</p>}
+          {formError && <p className="alert alert--danger">{formError}</p>}
         </form>
       </Modal>
     </DashboardLayout>
