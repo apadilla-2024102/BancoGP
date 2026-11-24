@@ -46,7 +46,7 @@ export default function ProductsPage() {
       <div className="split-grid">
         <div className="stack">
           <Card>
-            <CardHeader icon={<FiLayers />} title="Tipos de cuenta" description="Productos que se pueden abrir para un cliente." />
+            <CardHeader tone="amber" icon={<FiLayers />} title="Tipos de cuenta" description="Productos que se pueden abrir para un cliente." />
             <DataTable
               caption="Tipos de cuenta"
               columns={ACCOUNT_TYPE_COLUMNS}
@@ -60,6 +60,7 @@ export default function ProductsPage() {
 
           <Card>
             <CardHeader
+              tone="emerald"
               icon={<FiPercent />}
               title="Monedas y tasas"
               actions={
@@ -101,7 +102,7 @@ export default function ProductsPage() {
         </div>
 
         <Card className="sticky-card">
-          <CardHeader icon={<FiDollarSign />} title="Convertir moneda" description="Calcula el equivalente entre divisas." />
+          <CardHeader tone="violet" icon={<FiDollarSign />} title="Convertir moneda" description="Calcula el equivalente entre divisas." />
           <CurrencyConverter currencies={currencies} />
         </Card>
       </div>

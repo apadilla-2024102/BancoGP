@@ -188,7 +188,7 @@ export default function TransactionsPage() {
     <DashboardLayout title="Transacciones" subtitle="Consulta el historial y realiza depósitos, retiros y transferencias.">
       <div className="split-grid">
         <Card>
-          <CardHeader icon={<FiClock />} title="Historial de cuenta" description="Movimientos de la cuenta seleccionada." />
+          <CardHeader tone="violet" icon={<FiClock />} title="Historial de cuenta" description="Movimientos de la cuenta seleccionada." />
           <div className="form-grid tx-filters">
             <Select
               label="Cliente"
@@ -230,7 +230,7 @@ export default function TransactionsPage() {
 
         <div className="stack">
           <Card>
-            <CardHeader icon={<FiArrowDownLeft />} title="Depósito o retiro" description="Se aplica a la cuenta seleccionada en el historial." />
+            <CardHeader tone="emerald" icon={<FiArrowDownLeft />} title="Depósito o retiro" description="Se aplica a la cuenta seleccionada en el historial." />
             <div className="form-stack">
               <Input
                 label="Monto"
@@ -271,7 +271,7 @@ export default function TransactionsPage() {
           </Card>
 
           <Card>
-            <CardHeader icon={<FiRepeat />} title="Transferencia" description="Mueve fondos entre dos cuentas." />
+            <CardHeader tone="blue" icon={<FiRepeat />} title="Transferencia" description="Mueve fondos entre dos cuentas." />
             <form className="form-stack" onSubmit={handleTransfer}>
               <fieldset className="fieldset">
                 <legend>Origen</legend>

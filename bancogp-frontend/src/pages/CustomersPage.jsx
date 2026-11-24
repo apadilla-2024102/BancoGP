@@ -152,6 +152,7 @@ export default function CustomersPage() {
       <div className="split-grid">
         <Card>
           <CardHeader
+            tone="blue"
             icon={<FiUsers />}
             title="Directorio"
             description={loading ? 'Cargando…' : `${customers.length} clientes registrados`}
@@ -185,6 +186,7 @@ export default function CustomersPage() {
 
         <Card className="sticky-card">
           <CardHeader
+            tone="emerald"
             icon={<FiCreditCard />}
             title="Cuentas del cliente"
             description={selectedCustomer ? getCustomerName(selectedCustomer) : 'Selecciona un cliente de la lista'}

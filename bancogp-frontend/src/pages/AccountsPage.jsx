@@ -89,7 +89,7 @@ export default function AccountsPage() {
     <DashboardLayout title="Cuentas" subtitle="Busca las cuentas de un cliente y consulta el detalle y saldo de cada una.">
       <div className="split-grid">
         <Card>
-          <CardHeader icon={<FiUser />} title="Cuentas por cliente" description="Ingresa el ID del cliente para listar sus cuentas." />
+          <CardHeader tone="blue" icon={<FiUser />} title="Cuentas por cliente" description="Ingresa el ID del cliente para listar sus cuentas." />
           <form className="inline-form" onSubmit={handleSearchAccounts}>
             <Input
               value={customerId}
@@ -134,7 +134,7 @@ export default function AccountsPage() {
         </Card>
 
         <Card className="sticky-card">
-          <CardHeader icon={<FiCreditCard />} title="Detalle de cuenta" description="Selecciona una cuenta o ingresa su ID." />
+          <CardHeader tone="emerald" icon={<FiCreditCard />} title="Detalle de cuenta" description="Selecciona una cuenta o ingresa su ID." />
           <form
             className="inline-form"
             onSubmit={(event) => {
