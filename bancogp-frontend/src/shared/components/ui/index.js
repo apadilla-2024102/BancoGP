@@ -12,3 +12,4 @@ export { Skeleton, SkeletonRows } from './Skeleton.jsx';
 export { Spinner } from './Spinner.jsx';
 export { StatCard } from './StatCard.jsx';
 export { Tabs } from './Tabs.jsx';
+export { ThemeToggle } from './ThemeToggle.jsx';
