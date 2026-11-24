@@ -8,12 +8,12 @@ export const formatCurrency = (value, currency = 'USD') => {
     try {
       currencyFormatters.set(
         currency,
-        new Intl.NumberFormat('es-GT', { style: 'currency', currency, minimumFractionDigits: 2 })
+        new Intl.NumberFormat('es-GT', { style: 'currency', currency, currencyDisplay: 'narrowSymbol', minimumFractionDigits: 2 })
       );
     } catch {
       currencyFormatters.set(
         currency,
-        new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })
+        new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol', minimumFractionDigits: 2 })
       );
     }
   }
