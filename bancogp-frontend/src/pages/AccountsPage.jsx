@@ -5,7 +5,7 @@ import { DashboardLayout } from '../shared/components/layout/DashboardLayout.jsx
 import { getCustomerAccounts, getCustomer } from '../shared/api/customersApi.js';
 import { getAccountDetails, getAccountBalance } from '../shared/api/accountsApi.js';
 import { Badge, Button, Card, CardHeader, DataTable, EmptyState, Input } from '../shared/components/ui/index.js';
-import { formatCurrency, pluralize } from '../shared/utils/format.js';
+import { accountTypeTone, formatCurrency, pluralize, toneFromString } from '../shared/utils/format.js';
 import { getCustomerName } from '../shared/utils/cn.js';
 
 const getAccountKey = (account) => account.accountId ?? account.id ?? account.accountNumber;
@@ -74,7 +74,11 @@ export default function AccountsPage() {
 
   const columns = [
     { key: 'id', header: 'Cuenta', mono: true, render: (a) => getAccountKey(a) },
-    { key: 'type', header: 'Tipo', render: (a) => <Badge>{a.accountType ?? a.type ?? '—'}</Badge> },
+    {
+      key: 'type',
+      header: 'Tipo',
+      render: (a) => <Badge tone={accountTypeTone(a.accountType ?? a.type)}>{a.accountType ?? a.type ?? '—'}</Badge>,
+    },
     { key: 'balance', header: 'Saldo', align: 'right', render: (a) => formatCurrency(a.balance ?? 0, a.currency) },
   ];
 
@@ -101,7 +105,9 @@ export default function AccountsPage() {
 
           {customer && (
             <div className="customer-summary animate-in">
-              <span className="avatar">{getCustomerName(customer).charAt(0).toUpperCase()}</span>
+              <span className="avatar avatar--tone" data-tone={toneFromString(getCustomerName(customer))}>
+                {getCustomerName(customer).charAt(0).toUpperCase()}
+              </span>
               <div className="customer-summary__info">
                 <p className="customer-summary__name">{getCustomerName(customer)}</p>
                 <p className="customer-summary__meta">{customer.email ?? 'Sin correo'}</p>

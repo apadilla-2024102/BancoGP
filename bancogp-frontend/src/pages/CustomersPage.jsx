@@ -4,7 +4,7 @@ import { FiCreditCard, FiPlus, FiSearch, FiUsers } from 'react-icons/fi';
 import { DashboardLayout } from '../shared/components/layout/DashboardLayout.jsx';
 import { getCustomers, getCustomerAccounts, createCustomer } from '../shared/api/customersApi.js';
 import { Badge, Button, Card, CardHeader, DataTable, EmptyState, Input, Modal } from '../shared/components/ui/index.js';
-import { formatCurrency } from '../shared/utils/format.js';
+import { accountTypeTone, formatCurrency, toneFromString } from '../shared/utils/format.js';
 import { getCustomerName, getErrorMessage, getId } from '../shared/utils/cn.js';
 
 const EMPTY_FORM = { firstName: '', lastName: '', email: '' };
@@ -117,7 +117,9 @@ export default function CustomersPage() {
       header: 'Nombre',
       render: (c) => (
         <span className="cell-user">
-          <span className="avatar avatar--sm">{getCustomerName(c).charAt(0).toUpperCase()}</span>
+          <span className="avatar avatar--sm avatar--tone" data-tone={toneFromString(getCustomerName(c))}>
+            {getCustomerName(c).charAt(0).toUpperCase()}
+          </span>
           <span className="cell-user__name">{getCustomerName(c)}</span>
           {c.isNew && <Badge tone="accent">Nuevo</Badge>}
         </span>
@@ -129,7 +131,11 @@ export default function CustomersPage() {
 
   const accountColumns = [
     { key: 'id', header: 'Cuenta', mono: true, render: (a) => a.accountNumber ?? a.accountId ?? a.id },
-    { key: 'type', header: 'Tipo', render: (a) => <Badge>{a.accountType ?? a.type ?? '—'}</Badge> },
+    {
+      key: 'type',
+      header: 'Tipo',
+      render: (a) => <Badge tone={accountTypeTone(a.accountType ?? a.type)}>{a.accountType ?? a.type ?? '—'}</Badge>,
+    },
     { key: 'balance', header: 'Saldo', align: 'right', render: (a) => formatCurrency(a.balance ?? 0, a.currency) },
   ];
 
