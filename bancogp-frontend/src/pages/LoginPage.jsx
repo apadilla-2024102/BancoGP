@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { FiShield, FiZap, FiTrendingUp } from 'react-icons/fi';
@@ -6,6 +6,8 @@ import { useAuth } from '../store/authStore.jsx';
 import { LoginForm } from '../features/auth/components/LoginForm.jsx';
 import { DotPattern, ThemeToggle } from '../shared/components/ui/index.js';
 import { Brand } from '../shared/components/layout/Sidebar.jsx';
+
+const LOGO_URL = 'https://res.cloudinary.com/dbjg9o5oj/image/upload/v1771474381/bancogp_xjoycv.png';
 
 const FEATURES = [
   { icon: FiShield, title: 'Seguro por diseño', text: 'Autenticación con tokens y sesiones protegidas.' },
@@ -16,6 +18,7 @@ const FEATURES = [
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, token } = useAuth();
+  const [logoFailed, setLogoFailed] = useState(false);
 
   useEffect(() => {
     if (token) navigate('/dashboard', { replace: true });
@@ -36,13 +39,20 @@ export default function LoginPage() {
         </header>
 
         <div className="auth__form-wrap stagger">
-          <img
-            className="auth__logo"
-            src="https://res.cloudinary.com/dbjg9o5oj/image/upload/v1771474381/bancogp_xjoycv.png"
-            alt=""
-            width="48"
-            height="48"
-          />
+          {logoFailed ? (
+            <span className="auth__logo auth__logo--fallback" aria-hidden="true">
+              GP
+            </span>
+          ) : (
+            <img
+              className="auth__logo"
+              src={LOGO_URL}
+              alt=""
+              width="48"
+              height="48"
+              onError={() => setLogoFailed(true)}
+            />
+          )}
           <div className="auth__intro">
             <h1>Inicia sesión</h1>
             <p>Accede al sistema de gestión bancaria de BancoGP.</p>
