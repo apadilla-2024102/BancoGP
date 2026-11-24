@@ -4,12 +4,10 @@ import AppRouter from './AppRouter.jsx';
 
 export default function App() {
   return (
-    <div className="app-shell">
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
-      </AuthProvider>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
