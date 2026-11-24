@@ -131,3 +131,25 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.select {
+  position: relative;
+}
+
+.select__control {
+  appearance: none;
+  padding-right: 36px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.select__chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-subtle);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
